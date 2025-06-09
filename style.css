@@ -34,4 +34,68 @@ body {
     background-color: var(--card-bg); /* 배경색 */
     border-radius: 12px; /* 둥근 모서리 */
     box-shadow: 0 8px 25px var(--shadow-color); /* 그림자 */
-    width: 90%; /* 화면 너비의 90% 차지 (
+    width: 90%; /* 화면 너비의 90% 차지 (여백 확보) */
+    max-width: 1280px; /* 16:9 기준, 더 넓은 해상도에 맞춰 최대 너비 조정 (예: 1280x720) */
+    height: 90vh; /* 화면 높이의 90% 차지 */
+    min-height: 600px; /* 너무 작아지지 않도록 최소 높이 설정 */
+    aspect-ratio: 16 / 9; /* **16:9 비율 유지 강제** */
+    padding: 30px;
+    text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    justify-content: space-between; /* 내용 분산 정렬 */
+    overflow-y: hidden; /* **컨테이너 자체에는 스크롤 없앰** */
+}
+
+/* 헤더 (제목 및 부제목) */
+header {
+    margin-bottom: 10px; /* **제목과 진행바 사이 간격 최소화** */
+    flex-shrink: 0; /* 크기가 줄어들지 않도록 */
+}
+
+header h1 {
+    color: var(--primary-color);
+    font-size: 2.5em; /* **글씨 디자인 원복** */
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 1.1em; /* **글씨 디자인 원복** */
+    color: #666;
+}
+
+/* 각 화면 (인트로, 퀴즈, 결과) 공통 스타일 */
+.screen {
+    display: none; /* 기본적으로 숨김 */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* 부드러운 전환 효과 */
+    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 내부 콘텐츠 상하 분배 */
+    padding-bottom: 5px; /* 하단 버튼과의 여백 더 줄임 */
+}
+
+.screen.active {
+    display: flex; /* 활성화 시 보이기 */
+    opacity: 1;
+}
+
+/* 인트로 화면 */
+#intro-screen {
+    justify-content: center; /* 내용 가운데 정렬 */
+    align-items: center;
+}
+#intro-screen p {
+    font-size: 1.2em; /* **글씨 디자인 원복** */
+    margin-bottom: 35px;
+}
+
+/* 공통 버튼 스타일 */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px; /* **글씨 디자인 원복** */
+    border
