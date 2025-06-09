@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM 요소 가져오기
+    // DOM Elements
     const introScreen = document.getElementById('intro-screen');
     const quizScreen = document.getElementById('quiz-screen');
     const resultsScreen = document.getElementById('results-screen');
@@ -15,40 +15,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const politicianDescription = document.getElementById('politician-description');
     const allPoliticiansInfo = document.getElementById('all-politicians-info');
 
-    // 게임 상태 변수
-    let currentQuestionIndex = 0;
-    let scores = {}; // 각 정치인별 선택 횟수를 저장 (누가 더 많이 선택되었는지)
-
-    // 정치인 정보 (실제 정치인 및 설명 업데이트)
+    // Game Data
     const politicians = {
         ardern: {
             name: "자신다 아던",
             description: "시민 목소리를 존중하고 직접 참여를 통해 정책 방향을 조율하는 데 중점을 둡니다. 기후 비상사태 선언 후 시민 협의회 운영 등 시민 기반의 기후 정책을 추진합니다.",
-            emoji: "🇳🇿" // 뉴질랜드 국기
+            emoji: "🇳🇿"
         },
         macron: {
             name: "에마뉘엘 마크롱",
             description: "정책 기조는 유지하되, 시위 원인을 파악해 보완하고 탄소세 조정이나 보조금 등 산업 부담 완화책을 병행합니다. 실용적인 접근과 절충을 중시합니다.",
-            emoji: "🇫🇷" // 프랑스 국기
+            emoji: "🇫🇷"
         },
         biden: {
             name: "조 바이든",
             description: "정책 추진은 계속하되, 반발을 줄이는 보완책과 인센티브 방식을 병행합니다. 기술 투자와 세제 혜택을 통해 산업 전환 및 기후 복원 인프라 투자를 유도합니다.",
-            emoji: "🇺🇸" // 미국 국기
+            emoji: "🇺🇸"
         },
         xi: {
             name: "시진핑",
             description: "국가 목표를 최우선으로 두며, 정책 추진을 위해 시위를 관리하거나 통제합니다. 국영기업을 포함해 목표 이행을 정부가 일률적으로 강제하는 중앙집권적 정책을 펼칩니다.",
-            emoji: "🇨🇳" // 중국 국기
+            emoji: "🇨🇳"
         },
         bolsonaro: {
             name: "자이르 보우소나루",
             description: "경제 성장과 산업 개발을 우선시하며, 환경 규제를 최소화하거나 사실상 자율에 맡깁니다. 정책에 방해가 되는 환경 단체 활동을 통제하는 등 강경 대응을 고려합니다.",
-            emoji: "🇧🇷" // 브라질 국기
+            emoji: "🇧🇷"
         }
     };
 
-    // 질문 목록 (제공해주신 10개의 질문과 선택지, 정치인 매핑 반영)
     const questions = [
         {
             question: "시민들이 기후 정책에 반발하거나 시위할 경우, 정부의 태도는?",
@@ -152,88 +147,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    // 점수 초기화 함수
+    // State
+    let currentQuestionIndex = 0;
+    let scores = {};
+    let selectedChoiceButton = null;
+
+    // Helpers
     function initializeScores() {
-        for (const key in politicians) {
-            scores[key] = 0;
-        }
+        scores = {};
+        for (const key in politicians) scores[key] = 0;
     }
 
-    // 질문 표시 함수
-    function displayQuestion() {
-        const questionData = questions[currentQuestionIndex];
-        questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.question}`;
-        choicesContainer.innerHTML = ''; // 기존 선택지 비우기
-        nextButton.disabled = true; // 선택 전에는 '다음' 버튼 비활성화
-
-        questionData.choices.forEach(choice => {
-            const button = document.createElement('button');
-            button.classList.add('choice-button');
-            button.textContent = choice.text;
-            button.dataset.value = choice.value; // 선택지 값 (정치인 키) 저장
-            button.addEventListener('click', () => selectChoice(button, choice.value));
-            choicesContainer.appendChild(button);
-        });
-
-        // 질문 번호 업데이트
-        currentQuestionNum.textContent = currentQuestionIndex + 1;
-        totalQuestionsNum.textContent = questions.length;
-        updateProgressBar(); // 진행 바 업데이트
+    function showScreen(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        screen.classList.add('active');
     }
 
-    // 선택지 선택 처리 함수
-    let selectedChoiceButton = null; // 현재 선택된 버튼 참조
-    function selectChoice(button, politicianValue) {
-        if (selectedChoiceButton) {
-            selectedChoiceButton.classList.remove('selected'); // 이전에 선택된 버튼의 스타일 제거
-        }
-        button.classList.add('selected'); // 새롭게 선택된 버튼에 스타일 적용
-        selectedChoiceButton = button; // 현재 선택된 버튼 업데이트
-        nextButton.disabled = false; // '다음' 버튼 활성화
-        quizScreen.dataset.currentSelection = politicianValue; // 선택된 정치인 값 임시 저장
-    }
-
-    // 진행 바 업데이트 함수
     function updateProgressBar() {
         const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
         progressBar.style.width = `${progress}%`;
     }
 
-    // 화면 전환 함수
-    function showScreen(screenToShow) {
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.remove('active'); // 모든 화면 비활성화
+    function displayQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.question}`;
+        choicesContainer.innerHTML = '';
+        nextButton.disabled = true;
+        selectedChoiceButton = null;
+
+        questionData.choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.classList.add('choice-button');
+            btn.textContent = choice.text;
+            btn.dataset.value = choice.value;
+            btn.onclick = () => selectChoice(btn, choice.value);
+            choicesContainer.appendChild(btn);
         });
-        screenToShow.classList.add('active'); // 특정 화면 활성화
+
+        currentQuestionNum.textContent = currentQuestionIndex + 1;
+        totalQuestionsNum.textContent = questions.length;
+        updateProgressBar();
     }
 
-    // 결과 표시 함수
+    function selectChoice(button, value) {
+        if (selectedChoiceButton) selectedChoiceButton.classList.remove('selected');
+        button.classList.add('selected');
+        selectedChoiceButton = button;
+        nextButton.disabled = false;
+        quizScreen.dataset.currentSelection = value;
+    }
+
     function showResults() {
-        showScreen(resultsScreen); // 결과 화면 표시
+        showScreen(resultsScreen);
 
-        let maxScore = 0;
-        let mostSimilar = '';
-
-        // 가장 많이 선택된 정치인 찾기
+        // max score politician (동점일 경우 먼저 등장하는 순서)
+        let maxScore = -1;
+        let mostSimilar = null;
         for (const key in scores) {
             if (scores[key] > maxScore) {
                 maxScore = scores[key];
                 mostSimilar = key;
-            } else if (scores[key] === maxScore) {
-                // 동점일 경우, 먼저 발견된 정치인으로 유지 (순서는 임의적)
             }
         }
 
-        const resultPolitician = politicians[mostSimilar];
-        mostSimilarPolitician.textContent = `${resultPolitician.emoji} ${resultPolitician.name}`;
-        politicianDescription.textContent = resultPolitician.description;
+        if (!mostSimilar) {
+            mostSimilarPolitician.textContent = "결과를 알 수 없습니다.";
+            politicianDescription.textContent = "질문에 답변이 없습니다.";
+        } else {
+            const result = politicians[mostSimilar];
+            mostSimilarPolitician.textContent = `${result.emoji} ${result.name}`;
+            politicianDescription.textContent = result.description;
+        }
 
-        // 모든 정치인 정보 표시
+        // 모든 정치인 정보
         allPoliticiansInfo.innerHTML = '';
         for (const key in politicians) {
             const p = politicians[key];
             const card = document.createElement('div');
-            card.classList.add('politician-card');
+            card.className = 'politician-card';
             card.innerHTML = `
                 <h4>${p.emoji} ${p.name}</h4>
                 <p><strong>설명:</strong> ${p.description}</p>
@@ -243,34 +234,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 이벤트 리스너
-    startButton.addEventListener('click', () => {
-        initializeScores(); // 점수 초기화
-        currentQuestionIndex = 0; // 첫 질문으로 리셋
-        showScreen(quizScreen); // 퀴즈 화면 표시
-        displayQuestion(); // 첫 질문 로드
-    });
+    // Event Listeners
+    startButton.onclick = () => {
+        initializeScores();
+        currentQuestionIndex = 0;
+        showScreen(quizScreen);
+        displayQuestion();
+    };
 
-    nextButton.addEventListener('click', () => {
-        const selectedPolitician = quizScreen.dataset.currentSelection;
-        if (selectedPolitician) {
-            scores[selectedPolitician]++; // 선택된 정치인의 점수 증가
-            delete quizScreen.dataset.currentSelection; // 현재 선택 해제
-            selectedChoiceButton = null; // 선택된 버튼 리셋
+    nextButton.onclick = () => {
+        const selectedValue = quizScreen.dataset.currentSelection;
+        if (selectedValue) {
+            scores[selectedValue]++;
+            delete quizScreen.dataset.currentSelection;
         }
-
-        currentQuestionIndex++; // 다음 질문으로
+        currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
-            displayQuestion(); // 다음 질문 표시
+            displayQuestion();
         } else {
-            showResults(); // 모든 질문 완료 시 결과 표시
+            showResults();
         }
-    });
+    };
 
-    restartButton.addEventListener('click', () => {
-        showScreen(introScreen); // 인트로 화면으로 돌아가기
-    });
+    restartButton.onclick = () => {
+        showScreen(introScreen);
+    };
 
-    // 페이지 로드 시 초기 화면 설정
+    // Init
     showScreen(introScreen);
 });
