@@ -21,10 +21,10 @@ body {
     color: var(--text-color); /* 기본 텍스트 색상 */
     background-color: var(--bg-color); /* 배경색 */
     margin: 0;
-    padding: 10px; /* 전체 여백을 조금 줄여서 컨테이너 공간 확보 */
+    padding: 0; /* **body 패딩 제거 - 컨테이너가 화면 가장자리에 더 가깝게 위치** */
     display: flex;
     justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 (컨테이너가 화면 중앙에 오도록) */
+    align-items: center; /* **세로 중앙 정렬 유지 (컨테이너가 화면 중앙에 있도록) - 컨테이너의 높이로 조절** */
     min-height: 100vh; /* 최소 높이 화면 전체 */
     box-sizing: border-box; /* 패딩, 보더가 너비/높이에 포함되도록 */
 }
@@ -36,28 +36,28 @@ body {
     box-shadow: 0 8px 25px var(--shadow-color); /* 그림자 */
     width: 95%; /* 화면 너비의 95%를 차지하도록 늘림 */
     max-width: 1280px; /* 16:9 기준, 더 넓은 해상도에 맞춰 최대 너비 조정 (예: 1280x720 이상) */
-    height: 95vh; /* 화면 높이의 95%를 차지하도록 늘림 */
+    height: 95vh; /* **화면 높이의 95%를 차지하도록 최대한 늘림** */
     aspect-ratio: 16 / 9; /* 16:9 비율 유지 강제 (가장 중요) */
     min-height: 540px; /* 16:9 비율을 고려한 최소 높이 (960x540 해상도에 맞춰) */
-    padding: 30px;
+    padding: 20px 30px; /* **컨테이너 상하 패딩을 20px로 줄여 내부 공간을 위로 올림** */
     text-align: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: column; /* 세로 정렬 */
-    justify-content: space-between; /* 내용 분산 정렬 */
+    /* justify-content: space-between; 제거 - 퀴즈 화면 내부에서 정렬을 더 세밀하게 제어 */
     overflow-y: hidden; /* 컨테이너 자체에는 스크롤 없앰 (화면 꽉 채우기 위함) */
 }
 
 /* 헤더 (제목 및 부제목) */
 header {
-    margin-bottom: 1px; /* **제목과 진행바 사이 간격을 5px로 대폭 줄임** */
+    margin-bottom: 5px; /* 제목과 진행바 사이 간격을 5px로 대폭 줄임 */
     flex-shrink: 0; /* 헤더는 크기가 줄어들지 않도록 */
 }
 
 header h1 {
     color: var(--primary-color);
     font-size: 2.5em;
-    margin-bottom: 3px; /* 부제목과의 간격 더 줄임 */
+    margin-bottom: 5px; /* 부제목과의 간격 더 줄임 */
 }
 
 header p {
@@ -73,8 +73,8 @@ header p {
     flex-grow: 1; /* 남은 공간을 채우도록 성장 */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* 내부 콘텐츠 상하 분배 */
-    padding-bottom: 10px; /* 하단 버튼과의 여백을 20px에서 10px로 줄임 */
+    /* justify-content: space-between; 제거 - 각 요소의 margin과 flex-grow로 조절 */
+    padding-bottom: 10px; /* 하단 버튼과의 여백 */
 }
 
 .screen.active {
@@ -106,18 +106,22 @@ button {
 }
 
 button:hover:not(:disabled) {
-    background-color: #2980b9; /* var(--button-hover-color) 대신 고정 색상으로 일관성 유지 */
-    transform: translateY(-2px); /* 약간 위로 이동 */
+    background-color: #2980b9;
+    transform: translateY(-2px);
 }
 
 button:disabled {
-    background-color: var(--button-disabled-color); /* 비활성화 시 색상 */
-    cursor: not-allowed; /* 커서 변경 */
+    background-color: var(--button-disabled-color);
+    cursor: not-allowed;
 }
 
 /* 퀴즈 화면 */
 #quiz-screen {
-    justify-content: space-between;
+    /* **퀴즈 화면 내부 요소들을 상단으로 밀착 정렬** */
+    justify-content: flex-start; /* **퀴즈 화면 내용을 상단으로 정렬** */
+    align-items: stretch; /* 아이템들이 너비를 꽉 채우도록 */
+    padding-top: 5px; /* **퀴즈 화면의 상단 여백을 최소화하여 위로 올림** */
+    flex-grow: 1; /* 컨테이너 내에서 남은 공간을 최대한 차지 */
 }
 
 .progress-bar-container {
@@ -125,10 +129,10 @@ button:disabled {
     background-color: var(--border-color);
     border-radius: 10px;
     height: 15px;
-    margin-bottom: 15px; /* **진행바와 질문 컨테이너 사이 간격을 20px에서 15px로 줄임** */
+    margin-bottom: 15px; /* 진행바와 질문 컨테이너 사이 간격 */
     overflow: hidden;
-    flex-shrink: 0; /* 진행바는 크기가 줄어들지 않도록 */
-    display: block; /* 진행바가 확실히 보이도록 */
+    flex-shrink: 0;
+    display: block;
 }
 
 .progress-bar {
@@ -141,215 +145,14 @@ button:disabled {
 
 .question-container {
     text-align: left;
-    margin-bottom: 15px; /* 질문 텍스트와 선택지 컨테이너 사이 간격 유지 */
-    flex-grow: 1; /* 질문과 선택지가 남은 공간을 차지 */
+    margin-bottom: 15px; /* 질문 텍스트와 선택지 컨테이너 사이 간격 */
+    flex-grow: 0; /* **더 이상 질문 컨테이너가 남은 공간을 차지하지 않음 (선택지에 집중)** */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* 질문 텍스트와 선택지 그룹을 수직 가운데 정렬 시도 */
+    justify-content: center;
 }
 
 #question-text {
     font-size: 1.4em;
     color: var(--primary-color);
-    margin-bottom: 0; /* question-container의 margin-bottom으로 충분하므로 제거 */
-    min-height: 80px; /* 질문 박스 최소 높이 유지 */
-    display: flex;
-    align-items: center; /* 세로 중앙 정렬 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    text-align: center;
-    background-color: var(--question-box-bg); /* 질문 배경색 */
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-    flex-shrink: 0; /* 질문 텍스트는 크기가 줄어들지 않도록 */
-}
-
-/* 선택지 박스 정렬 (한 줄에 한 선택지) */
-#choices-container {
-    display: flex;
-    flex-direction: column; /* 세로로 정렬 */
-    gap: 12px; /* 선택지 사이 간격 */
-    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
-    justify-content: space-evenly; /* 선택지들이 남은 공간에 균등하게 분배 (스크롤 방지) */
-}
-
-/* 개별 선택지 버튼 스타일 */
-.choice-button {
-    background-color: var(--card-bg); /* 배경색 흰색 */
-    border: 2px solid var(--border-color); /* 기본 테두리 색상 */
-    border-radius: 10px;
-    padding: 15px;
-    text-align: left; /* 선택지 텍스트 왼쪽 정렬 */
-    cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease; /* 호버 시 테두리만 변경 */
-    min-height: 60px; /* 선택지 최소 높이 */
-    display: flex;
-    align-items: center; /* 텍스트 세로 가운데 정렬 */
-    font-size: 1em;
-    color: var(--text-color);
-    line-height: 1.4; /* 줄 간격 조정 */
-    width: 100%; /* 너비 꽉 채우기 */
-    box-sizing: border-box; /* 패딩, 보더 포함 */
-}
-
-/* 선택지 버튼 호버 시 효과 */
-.choice-button:hover:not(.selected) { /* 선택되지 않은 상태에서만 호버 효과 적용 */
-    border-color: var(--hover-border-color); /* 테두리 색상 변경 */
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* 은은한 그림자 추가 */
-    transform: translateY(-2px); /* 약간 위로 이동 */
-}
-
-/* 선택된 선택지 버튼 스타일 */
-.choice-button.selected {
-    background-color: var(--secondary-color); /* 선택 시 초록색으로 배경 채우기 */
-    color: white;
-    border-color: var(--secondary-color);
-    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-}
-
-.question-counter {
-    font-size: 0.9em;
-    color: #888;
-    margin-top: 15px; /* 간격 줄임 */
-    margin-bottom: 15px; /* 간격 줄임 */
-    flex-shrink: 0; /* 크기가 줄어들지 않도록 */
-}
-
-#next-button {
-    margin-top: 10px; /* 간격 줄임 */
-    flex-shrink: 0; /* 크기가 줄어들지 않도록 */
-}
-
-/* 결과 화면 */
-#results-screen {
-    justify-content: flex-start; /* 상단 정렬 */
-    align-items: center; /* 가로 가운데 정렬 */
-    overflow-y: auto; /* 결과 화면 자체에 스크롤 허용 (카드 많아질 경우 대비) */
-}
-
-#results-screen h2 {
-    color: var(--secondary-color);
-    font-size: 2em;
-    margin-bottom: 20px;
-    flex-shrink: 0;
-}
-
-.result-box {
-    background-color: var(--question-box-bg); /* 배경색을 질문 박스와 유사하게 */
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 30px;
-    border: 2px solid var(--secondary-color);
-    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
-    width: 100%; /* 너비 꽉 채우기 */
-    box-sizing: border-box;
-    flex-shrink: 0;
-}
-
-#most-similar-politician {
-    color: var(--primary-color);
-    font-size: 1.8em;
-    margin-bottom: 10px;
-}
-
-#politician-description {
-    font-size: 1.1em;
-    color: #555;
-    text-align: center; /* 설명 가운데 정렬 */
-}
-
-#all-politicians-info h3 {
-    color: var(--primary-color);
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-size: 1.6em;
-    flex-shrink: 0;
-}
-
-/* 모든 정치인 카드 레이아웃 */
-#all-politicians-info {
-    display: flex;
-    flex-direction: column; /* 세로 정렬 */
-    gap: 15px; /* 카드 사이 간격 */
-    width: 100%;
-    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
-    overflow-y: auto; /* 카드 내용이 많아지면 스크롤 가능 */
-}
-
-.politician-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: left;
-    box-shadow: 0 2px 8px var(--shadow-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* 내용 분산 정렬 */
-    flex-shrink: 0; /* 카드가 줄어들지 않도록 */
-}
-
-.politician-card h4 {
-    color: var(--primary-color);
-    font-size: 1.3em;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-.politician-card p {
-    font-size: 0.95em;
-    color: #666;
-    margin-bottom: 5px;
-}
-
-.politician-card p strong {
-    color: var(--text-color);
-}
-
-#restart-button {
-    background-color: var(--restart-button-color);
-    margin-top: 30px; /* 결과 화면에서 재시작 버튼 상단 여백 */
-    flex-shrink: 0;
-}
-#restart-button:hover {
-    background-color: var(--restart-button-hover-color);
-}
-
-/* 반응형 웹 디자인: 작은 화면 (모바일 등) */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-    .container {
-        padding: 20px;
-        max-width: 100%;
-        max-height: 98vh; /* 모바일에서는 높이 거의 꽉 채움 */
-        min-height: unset; /* 모바일에서 최소 높이 제한 해제 */
-        aspect-ratio: unset; /* 모바일에서 비율 제한 해제 */
-    }
-    header h1 {
-        font-size: 2em;
-    }
-    #question-text {
-        font-size: 1.1em;
-        min-height: 50px;
-        padding: 10px;
-    }
-    .choice-button {
-        font-size: 0.9em;
-        min-height: 50px;
-        padding: 12px;
-    }
-    #most-similar-politician {
-        font-size: 1.5em;
-    }
-    #politician-description {
-        font-size: 1em;
-    }
-    .politician-card h4 {
-        font-size: 1.1em;
-    }
-    .politician-card p {
-        font-size: 0.85em;
-    }
-}
+    margin-bottom: 0
