@@ -38,7 +38,7 @@ body {
 .container {
     background-color: var(--card-bg);
     width: 100%;
-    max-width: 800px; /* 👉 퀴즈 가로폭 제한 */
+    max-width: 800px;
     height: 100vh;
     border-radius: 0;
     box-shadow: none;
@@ -50,7 +50,6 @@ body {
     overflow: hidden;
 }
 
-/* ===== 헤더 ===== */
 header {
     margin-bottom: 5px;
     flex-shrink: 0;
@@ -69,7 +68,6 @@ header p {
     text-align: center;
 }
 
-/* ===== 화면(Page) ===== */
 .screen {
     display: none;
     opacity: 0;
@@ -88,7 +86,6 @@ header p {
     opacity: 1;
 }
 
-/* ===== 인트로 화면 ===== */
 #intro-screen {
     justify-content: center;
     align-items: center;
@@ -100,7 +97,6 @@ header p {
     text-align: center;
 }
 
-/* ===== 버튼 ===== */
 button {
     background-color: var(--primary-color);
     color: white;
@@ -123,7 +119,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* ===== 퀴즈 화면 ===== */
 #quiz-screen {
     padding-top: 0;
     overflow: hidden;
@@ -227,7 +222,6 @@ button:disabled {
     flex-shrink: 0;
 }
 
-/* ===== 결과 화면 ===== */
 #results-screen {
     justify-content: flex-start;
     align-items: center;
@@ -308,8 +302,6 @@ button:disabled {
     line-height: 1.4;
     margin: 2px 0 0 0;
 }
-
-/* ===== 재시작 버튼 ===== */
 #restart-button {
     background-color: var(--restart-button-color);
     margin-top: 18px;
@@ -317,8 +309,6 @@ button:disabled {
 #restart-button:hover {
     background-color: var(--restart-button-hover-color);
 }
-
-/* ===== 스크롤바 최소화 ===== */
 #choices-container, #all-politicians-info {
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) var(--border-color);
@@ -333,8 +323,6 @@ button:disabled {
     background: var(--primary-color);
     border-radius: 4px;
 }
-
-/* ===== 모바일 대응 ===== */
 @media (max-width: 900px) {
     .container {
         max-width: 100%;
