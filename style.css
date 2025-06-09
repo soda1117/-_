@@ -50,14 +50,14 @@ body {
 
 /* 헤더 (제목 및 부제목) */
 header {
-    margin-bottom: 5px; /* **제목과 진행바 사이 간격을 5px로 대폭 줄임** */
+    margin-bottom: 1px; /* **제목과 진행바 사이 간격을 5px로 대폭 줄임** */
     flex-shrink: 0; /* 헤더는 크기가 줄어들지 않도록 */
 }
 
 header h1 {
     color: var(--primary-color);
     font-size: 2.5em;
-    margin-bottom: 5px; /* 부제목과의 간격 더 줄임 */
+    margin-bottom: 3px; /* 부제목과의 간격 더 줄임 */
 }
 
 header p {
