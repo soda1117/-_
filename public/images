@@ -1,0 +1,22 @@
+const presidentImages = {
+  "저신다 아던": "/images/jacinda_ardern.jpg",   // 1번 이미지
+  "에마뉘엘 마크롱": "/images/macron.jpg",       // 2번 이미지
+  "조 바이든": "/images/biden.jpg",              // 3번 이미지
+  "시진핑": "/images/xi_jinping.jpg",            // 4번 이미지
+  "자이르 보우소나루": "/images/bolsonaro.jpg"   // 5번 이미지
+};
+
+function ResultPage({ result }) {
+  return (
+    <div>
+      <h2>당신과 가장 비슷한 리더는 {result}입니다!</h2>
+      <img
+        src={presidentImages[result]}
+        alt={result}
+        style={{ maxWidth: 400, width: "100%", borderRadius: 16 }}
+      />
+    </div>
+  );
+}
+
+export default ResultPage;
