@@ -37,7 +37,6 @@ body {
     box-shadow: 0 8px 25px var(--shadow-color);
     width: 95%;
     max-width: 1280px;
-    /* height: 95vh; */ /* 이 부분을 삭제하거나 주석 처리 */
     min-height: 540px; /* 최소 높이 유지 */
     padding: 20px 30px;
     text-align: center;
@@ -45,8 +44,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    /* overflow: hidden; */ /* 컨테이너의 overflow는 제거 */
-    /* aspect-ratio: 16 / 9; */ /* 비율 유지 강제는 특정 해상도에서 공간 문제를 일으킬 수 있어 제거 */
 }
 
 /* 헤더 (제목 및 부제목) */
@@ -68,28 +65,27 @@ header p {
 
 /* 각 화면 (인트로, 퀴즈, 결과) 공통 스타일 */
 .screen {
-    display: none;
+    display: none; /* 기본적으로 숨김 */
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out; /* 부드러운 전환 효과 */
     flex-grow: 1; /* 남은 공간을 채우도록 성장 */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-bottom: 10px;
+    flex-direction: column; /* 세로 정렬 (JavaScript에서 display:flex를 추가할 때 적용) */
+    justify-content: flex-start; /* 각 화면 내부 콘텐츠를 상단 정렬 */
+    padding-bottom: 10px; /* 하단 버튼과의 여백 */
     height: 100%; /* 부모(container)의 flex-grow:1 에 맞춰 높이를 100%로 설정 */
     min-height: 0; /* flex 아이템이 내용물보다 작아질 수 있도록 허용 */
 }
 
 .screen.active {
-    display: flex;
+    display: flex; /* 활성화 시 보이기 */
     opacity: 1;
 }
 
 /* 인트로 화면 */
 #intro-screen {
-    justify-content: center;
+    justify-content: center; /* 내용 가운데 정렬 */
     align-items: center;
-    overflow: hidden;
+    overflow: hidden; /* 인트로 화면은 스크롤 필요 없으므로 숨김 */
 }
 #intro-screen p {
     font-size: 1.1em; /* 폰트 사이즈 약간 줄임 */
@@ -109,13 +105,26 @@ button {
     min-width: 140px; /* 최소 너비 약간 줄임 */
 }
 
+button:hover:not(:disabled) {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: var(--button-disabled-color);
+    cursor: not-allowed;
+}
+
 /* 퀴즈 화면 */
 #quiz-screen {
     padding-top: 0px;
     overflow-y: auto; /* 퀴즈 화면에 스크롤 필요 시 자동 활성화 */
-    display: flex; /* flex 컨테이너로 설정 */
-    flex-direction: column; /* 세로 방향으로 아이템 정렬 */
-    height: 100%; /* 부모에 꽉 차도록 */
+    /*
+     * 이전에 여기에 display: flex; flex-direction: column; 이 있었는데,
+     * 이는 .screen.active와 중복되어 문제가 발생할 수 있습니다.
+     * JavaScript가 .active 클래스를 추가할 때 display: flex;가 적용되므로
+     * 여기서는 제거하여 JavaScript의 화면 전환 로직과 충돌을 피합니다.
+     */
 }
 
 .progress-bar-container {
@@ -124,19 +133,27 @@ button {
     border-radius: 10px;
     height: 12px; /* 진행바 높이 약간 줄임 */
     margin-top: 0;
-    margin-bottom: 10px; /* 간격 약간 줄임 */
+    margin-bottom: 10px; /* 진행바와 질문 컨테이너 사이 간격 약간 줄임 */
     overflow: hidden;
-    flex-shrink: 0;
+    flex-shrink: 0; /* 크기가 줄어들지 않도록 */
     display: block;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    transition: width 0.5s ease-out;
 }
 
 .question-container {
     text-align: left;
-    margin-bottom: 10px; /* 간격 약간 줄임 */
-    flex-shrink: 0;
+    margin-bottom: 10px; /* 질문 텍스트와 선택지 컨테이너 사이 간격 약간 줄임 */
+    flex-shrink: 0; /* 질문 컨테이너는 필요한 만큼만 공간 차지 */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; /* 질문 텍스트 내용 세로 중앙 정렬 */
 }
 
 #question-text {
@@ -155,14 +172,14 @@ button {
     flex-shrink: 0;
 }
 
-/* 선택지 박스 정렬 */
+/* 선택지 박스 정렬 (한 줄에 한 선택지) */
 #choices-container {
     display: flex;
     flex-direction: column;
     gap: 10px; /* 간격 약간 줄임 */
-    flex-grow: 1; /* 남은 공간을 최대한 차지 */
+    flex-grow: 1; /* 선택지 컨테이너가 남은 공간을 최대한 차지 */
     justify-content: space-evenly; /* 선택지들이 남은 공간에 균등하게 분배 */
-    overflow-y: auto; /* 선택지 컨테이너에 스크롤 필요 시 자동 활성화 */
+    overflow-y: auto; /* **선택지 컨테이너에도 스크롤 필요 시 자동 활성화** */
     min-height: 0; /* flex 아이템이 내용물보다 작아질 수 있도록 허용 */
     padding-bottom: 5px; /* 하단 버튼과의 여백 확보 */
 }
@@ -186,6 +203,21 @@ button {
     box-sizing: border-box;
 }
 
+/* 선택지 버튼 호버 시 효과 */
+.choice-button:hover:not(.selected) {
+    border-color: var(--hover-border-color);
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 선택된 선택지 버튼 스타일 */
+.choice-button.selected {
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+}
+
 .question-counter {
     font-size: 0.85em; /* 폰트 사이즈 약간 줄임 */
     color: #888;
@@ -201,10 +233,10 @@ button {
 
 /* 결과 화면 */
 #results-screen {
-    justify-content: flex-start;
-    align-items: center;
-    overflow-y: auto; /* 결과 화면에 스크롤 가능하도록 복구 */
-    min-height: 0;
+    justify-content: flex-start; /* 상단 정렬 */
+    align-items: center; /* 가로 가운데 정렬 */
+    overflow-y: auto; /* **핵심: 결과 화면에 스크롤 가능하도록 복구** */
+    min-height: 0; /* flex 아이템이 내용물보다 작아질 수 있도록 허용 */
     padding-bottom: 10px; /* 하단 버튼과의 여백 */
 }
 
@@ -253,9 +285,9 @@ button {
     flex-direction: column;
     gap: 12px; /* 간격 약간 줄임 */
     width: 100%;
-    flex-grow: 1;
-    overflow-y: auto; /* 모든 정치인 정보 카드 컨테이너 자체에 스크롤 활성화 */
-    min-height: 0;
+    flex-grow: 1; /* 남은 공간을 채우고 */
+    overflow-y: auto; /* **핵심: 모든 정치인 정보 카드 컨테이너 자체에 스크롤 활성화** */
+    min-height: 0; /* flex 아이템이 내용물보다 작아질 수 있도록 허용 */
     padding-bottom: 5px; /* 하단 버튼과의 여백 확보 */
 }
 
@@ -269,7 +301,7 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex-shrink: 0;
+    flex-shrink: 0; /* 카드가 축소되지 않도록 설정 (콘텐츠가 넘치면 부모 스크롤) */
 }
 
 .politician-card h4 {
