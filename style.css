@@ -21,10 +21,10 @@ body {
     color: var(--text-color); /* 기본 텍스트 색상 */
     background-color: var(--bg-color); /* 배경색 */
     margin: 0;
-    padding: 20px;
+    padding: 10px; /* 전체 여백을 조금 줄여서 컨테이너 공간 확보 */
     display: flex;
     justify-content: center; /* 가로 중앙 정렬 */
-    align-items: flex-start; /* 세로 상단 정렬 (컨테이너가 화면 상단에 붙도록) */
+    align-items: center; /* 세로 중앙 정렬 (컨테이너가 화면 중앙에 오도록) */
     min-height: 100vh; /* 최소 높이 화면 전체 */
     box-sizing: border-box; /* 패딩, 보더가 너비/높이에 포함되도록 */
 }
@@ -34,32 +34,31 @@ body {
     background-color: var(--card-bg); /* 배경색 */
     border-radius: 12px; /* 둥근 모서리 */
     box-shadow: 0 8px 25px var(--shadow-color); /* 그림자 */
-    width: 100%;
-    /* 노트북 및 PPT 비율 (예: 16:9)에 적합한 최대 너비와 높이 설정 */
-    max-width: 960px; /* 16:9 비율의 너비 (960x540 등) */
-    /* max-height를 고정시키기보다, 내용에 따라 유동적이되 너무 길어지지 않게 함 */
-    max-height: 90vh; /* 화면 높이의 90%를 넘지 않도록 (상하 여백 확보) */
-    aspect-ratio: 16 / 9; /* 16:9 비율 유지 시도 (최대 너비 내에서) */
-    min-height: 500px; /* 너무 작아지지 않도록 최소 높이 설정 */
+    width: 95%; /* **화면 너비의 95%를 차지하도록 늘림** */
+    max-width: 1280px; /* **16:9 기준, 더 넓은 해상도에 맞춰 최대 너비 조정 (예: 1280x720 이상)** */
+    height: 95vh; /* **화면 높이의 95%를 차지하도록 늘림** */
+    /* max-height: 90vh; 제거 - height: 95vh로 거의 꽉 채움 */
+    aspect-ratio: 16 / 9; /* **16:9 비율 유지 강제 (가장 중요)** */
+    min-height: 540px; /* **16:9 비율을 고려한 최소 높이 (960x540 해상도에 맞춰)** */
     padding: 30px;
     text-align: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: column; /* 세로 정렬 */
     justify-content: space-between; /* 내용 분산 정렬 */
-    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
+    overflow-y: hidden; /* **컨테이너 자체에는 스크롤 없앰 (화면 꽉 채우기 위함)** */
 }
 
 /* 헤더 (제목 및 부제목) */
 header {
-    margin-bottom: 30px;
+    margin-bottom: 15px; /* **제목과 진행바 사이 간격을 30px에서 15px로 줄임** */
     flex-shrink: 0; /* 헤더는 크기가 줄어들지 않도록 */
 }
 
 header h1 {
     color: var(--primary-color);
     font-size: 2.5em;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* 부제목과의 간격 살짝 줄임 */
 }
 
 header p {
@@ -76,7 +75,7 @@ header p {
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* 내부 콘텐츠 상하 분배 */
-    padding-bottom: 20px; /* 하단 버튼과의 여백 */
+    padding-bottom: 10px; /* 하단 버튼과의 여백을 20px에서 10px로 줄임 */
 }
 
 .screen.active {
@@ -108,7 +107,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-    background-color: var(--button-hover-color); /* 호버 시 색상 */
+    background-color: #2980b9; /* var(--button-hover-color) 대신 고정 색상으로 일관성 유지 */
     transform: translateY(-2px); /* 약간 위로 이동 */
 }
 
@@ -127,9 +126,10 @@ button:disabled {
     background-color: var(--border-color);
     border-radius: 10px;
     height: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 20px; /* **진행바와 질문 컨테이너 사이 간격을 25px에서 20px로 줄임** */
     overflow: hidden;
     flex-shrink: 0; /* 진행바는 크기가 줄어들지 않도록 */
+    display: block; /* 진행바가 확실히 보이도록 */
 }
 
 .progress-bar {
@@ -142,7 +142,7 @@ button:disabled {
 
 .question-container {
     text-align: left;
-    margin-bottom: 25px;
+    margin-bottom: 15px; /* **질문 텍스트와 선택지 컨테이너 사이 간격을 25px에서 15px로 줄임** */
     flex-grow: 1; /* 질문과 선택지가 남은 공간을 차지 */
     display: flex;
     flex-direction: column;
@@ -152,7 +152,7 @@ button:disabled {
 #question-text {
     font-size: 1.4em;
     color: var(--primary-color);
-    margin-bottom: 20px;
+    margin-bottom: 0; /* question-container의 margin-bottom으로 충분하므로 제거 */
     min-height: 80px; /* 질문 박스 최소 높이 유지 */
     display: flex;
     align-items: center; /* 세로 중앙 정렬 */
@@ -171,7 +171,7 @@ button:disabled {
     flex-direction: column; /* 세로로 정렬 */
     gap: 12px; /* 선택지 사이 간격 */
     flex-grow: 1; /* 남은 공간을 채우도록 성장 */
-    justify-content: center; /* 선택지 그룹을 세로 가운데 정렬 */
+    justify-content: space-evenly; /* **선택지들이 남은 공간에 균등하게 분배 (스크롤 방지)** */
 }
 
 /* 개별 선택지 버튼 스타일 */
@@ -211,13 +211,13 @@ button:disabled {
 .question-counter {
     font-size: 0.9em;
     color: #888;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 15px; /* 간격 줄임 */
+    margin-bottom: 15px; /* 간격 줄임 */
     flex-shrink: 0; /* 크기가 줄어들지 않도록 */
 }
 
 #next-button {
-    margin-top: 15px;
+    margin-top: 10px; /* 간격 줄임 */
     flex-shrink: 0; /* 크기가 줄어들지 않도록 */
 }
 
@@ -225,6 +225,7 @@ button:disabled {
 #results-screen {
     justify-content: flex-start; /* 상단 정렬 */
     align-items: center; /* 가로 가운데 정렬 */
+    overflow-y: auto; /* **결과 화면 자체에 스크롤 허용 (카드 많아질 경우 대비)** */
 }
 
 #results-screen h2 {
