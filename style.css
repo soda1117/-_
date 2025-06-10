@@ -1,254 +1,265 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #f8fafc;
-  font-family: 'Pretendard', 'Noto Sans KR', Arial, sans-serif;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const introScreen = document.getElementById('intro-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const startButton = document.getElementById('start-button');
+    const nextButton = document.getElementById('next-button');
+    const restartButton = document.getElementById('restart-button');
+    const questionText = document.getElementById('question-text');
+    const choicesContainer = document.getElementById('choices-container');
+    const progressBar = document.getElementById('progress-bar');
+    const currentQuestionNum = document.getElementById('current-question-num');
+    const totalQuestionsNum = document.getElementById('total-questions-num');
+    const mostSimilarPolitician = document.getElementById('most-similar-politician');
+    const politicianDescription = document.getElementById('politician-description');
+    const allPoliticiansInfo = document.getElementById('all-politicians-info');
 
-#game-container {
-  width: 100vw;
-  height: 100vh;
-  min-width: 900px;
-  min-height: 506px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    // Game Data
+    const politicians = {
+        ardern: {
+            name: "자신다 아던",
+            description: "시민 목소리를 존중하고 직접 참여를 통해 정책 방향을 조율하는 데 중점을 둡니다. 기후 비상사태 선언 후 시민 협의회 운영 등 시민 기반의 기후 정책을 추진합니다.",
+            emoji: "🇳🇿"
+        },
+        macron: {
+            name: "에마뉘엘 마크롱",
+            description: "정책 기조는 유지하되, 시위 원인을 파악해 보완하고 탄소세 조정이나 보조금 등 산업 부담 완화책을 병행합니다. 실용적인 접근과 절충을 중시합니다.",
+            emoji: "🇫🇷"
+        },
+        biden: {
+            name: "조 바이든",
+            description: "정책 추진은 계속하되, 반발을 줄이는 보완책과 인센티브 방식을 병행합니다. 기술 투자와 세제 혜택을 통해 산업 전환 및 기후 복원 인프라 투자를 유도합니다.",
+            emoji: "🇺🇸"
+        },
+        xi: {
+            name: "시진핑",
+            description: "국가 목표를 최우선으로 두며, 정책 추진을 위해 시위를 관리하거나 통제합니다. 국영기업을 포함해 목표 이행을 정부가 일률적으로 강제하는 중앙집권적 정책을 펼칩니다.",
+            emoji: "🇨🇳"
+        },
+        bolsonaro: {
+            name: "자이르 보우소나루",
+            description: "경제 성장과 산업 개발을 우선시하며, 환경 규제를 최소화하거나 사실상 자율에 맡깁니다. 정책에 방해가 되는 환경 단체 활동을 통제하는 등 강경 대응을 고려합니다.",
+            emoji: "🇧🇷"
+        }
+    };
 
-.quiz-box {
-  width: 90vw;
-  max-width: 1280px;
-  height: 90vh;
-  max-height: 720px;
-  aspect-ratio: 16 / 9;
-  background: #fff;
-  border-radius: 32px;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 48px 64px 40px 64px;
-  position: relative;
-  animation: fadeIn 0.8s;
-}
+    const questions = [
+        {
+            question: "시민들이 기후 정책에 반발하거나 시위할 경우, 정부의 태도는?",
+            choices: [
+                { text: "시민 목소리를 존중하며 정책 방향과 방법을 조율한다.", value: "ardern" },
+                { text: "시위 원인을 파악해 보완하되 정책 기조는 유지한다.", value: "macron" },
+                { text: "정책 추진은 계속하되, 반발을 줄이는 보완책 병행한다.", value: "biden" },
+                { text: "국가 목표 우선, 시위는 관리하되 통제한다.", value: "xi" },
+                { text: "강경 대응, 정책에 방해가 되면 탄압까지도 정당하다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "탄소배출 많은 산업 규제 제안을 어떻게 다룰까?",
+            choices: [
+                { text: "다자 협의를 통해 사회적 합의를 도출한다.", value: "ardern" },
+                { text: "목표는 유지하되, 산업 부담은 탄소세 조정이나 보조금으로 완화한다.", value: "macron" },
+                { text: "기술 투자와 세제 혜택을 통해 산업 전환을 유도한다.", value: "biden" },
+                { text: "국영기업 포함해 목표 이행을 정부가 일률적으로 강제한다.", value: "xi" },
+                { text: "규제는 산업 성장 방해하니 사실상 자율로 둔다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "자동차 정책을 바꾸려면?",
+            choices: [
+                { text: "시민과 논의하여 지역별 맞춤 제한 조치를 도입한다.", value: "ardern" },
+                { text: "유류세 조정과 전기차 보급 확대 병행한다.", value: "macron" },
+                { text: "전기차 인프라 확대하며 점진적 전환을 추진한다.", value: "biden" },
+                { text: "대도시는 차량 제한 구역 지정해 빠르게 실행한다.", value: "xi" },
+                { text: "최소 규제, 산업·소비자 자유 우선이다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "산불·폭염 같은 기후 재난 대응 방법은?",
+            choices: [
+                { text: "주민 주도 복구 프로그램 중심으로 대응한다.", value: "ardern" },
+                { text: "피해 지역에 재정 지원을 늘리고 보상 체계 구축한다.", value: "macron" },
+                { text: "기후 복원 인프라에 투자하는 재난 대응 전략을 펴고 있다.", value: "biden" },
+                { text: "중앙 정부 주도 시스템으로 지역 대응 일괄 관리한다.", value: "xi" },
+                { text: "재난 대응보다 경제 복구를 우선시한다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "온실가스 감축 반발 대응은?",
+            choices: [
+                { text: "산업·시민·환경단체 등과 함께 협의회를 구성한다.", value: "ardern" },
+                { text: "목표는 유지하고 산업 지원책도 병행 시행한다.", value: "macron" },
+                { text: "녹색 기술 개발에 예산 집중하여 정책 저항을 완화한다.", value: "biden" },
+                { text: "국영기업에까지 감축 의무를 부과하고 단호히 시행한다.", value: "xi" },
+                { text: "산업 위축 우려 시 정책 재검토도 고려한다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "기후위기 교육 확대 시?",
+            choices: [
+                { text: "학생 직접 참여형 기후 교육을 운영한다.", value: "ardern" },
+                { text: "산업·환경 연계 실용 교육 중심으로 개편한다.", value: "macron" },
+                { text: "녹색 일자리 기반 STEM 교육을 확충한다.", value: "biden" },
+                { text: "국가가 중심이 된 환경교육 체계로 통일 적용한다.", value: "xi" },
+                { text: "자율에 맡기고 의무화는 지양한다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "재생에너지 시설 반발 대응?",
+            choices: [
+                { text: "주민 협의로 입지 결정, 동의를 우선한다.", value: "ardern" },
+                { text: "인센티브 및 지역 개발 혜택을 함께 제공한다.", value: "macron" },
+                { text: "지역경제와 연계된 그린 인프라를 추진한다.", value: "biden" },
+                { text: "중앙정부에 의해 입지를 강제할 수 있다.", value: "xi" },
+                { text: "반대 시 제외, 대체 방안 모색한다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "기후 불평등 완화 방안은?",
+            choices: [
+                { text: "원주민·취약계층 중심의 맞춤형 지원 정책을 시행한다.", value: "ardern" },
+                { text: "차등 보조금+에너지 복지를 강화한다.", value: "macron" },
+                { text: "녹색 일자리·인프라로 지역 불평등 개선을 지원한다.", value: "biden" },
+                { text: "중앙 기준 균형으로 지역 간 격차를 통제한다.", value: "xi" },
+                { text: "시장에 맡겨 불평등을 해결한다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "탄소세 도입 방식은?",
+            choices: [
+                { text: "공개토론 거쳐 사회적 합의를 통해 도입한다.", value: "ardern" },
+                { text: "일부 환급 포함해 점진적으로 적용한다.", value: "macron" },
+                { text: "세금수익을 청정에너지에 재투자하겠다고 명확히 한다.", value: "biden" },
+                { text: "정부가 세율 정해 강제 시행한다.", value: "xi" },
+                { text: "경제 부담 우려로 도입하지 않는다.", value: "bolsonaro" }
+            ]
+        },
+        {
+            question: "국제 기후회의에서의 정부 역할은?",
+            choices: [
+                { text: "시민 대표(청년 포함)와 동행하며 공동 발언을 한다.", value: "ardern" },
+                { text: "EU 등 협력 틀 내에서 현실적 합의 도출을 목표로 한다.", value: "macron" },
+                { text: "자국 산업 경쟁력 고려하며 선도국 이미지를 강조한다.", value: "biden" },
+                { text: "개발도상국 입장 강조하며 자국 요구를 강하게 주장한다.", value: "xi" },
+                { text: "주권·경제 보호 차원에서 협력은 최소화한다.", value: "bolsonaro" }
+            ]
+        }
+    ];
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(32px);}
-  to   { opacity: 1; transform: translateY(0);}
-}
+    // State
+    let currentQuestionIndex = 0;
+    let scores = {};
+    let selectedChoiceButton = null;
 
-.quiz-title {
-  font-size: 2.8rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 10px;
-  color: #333;
-}
+    // Helpers
+    function initializeScores() {
+        scores = {};
+        for (const key in politicians) scores[key] = 0;
+    }
 
-.quiz-subtitle {
-  font-size: 1.3rem;
-  text-align: center;
-  color: #76a7c3;
-  margin-bottom: 30px;
-}
+    function showScreen(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        screen.classList.add('active');
+    }
 
-.start-btn, .next-btn, .restart-btn {
-  display: block;
-  margin: 0 auto;
-  padding: 16px 48px;
-  border: none;
-  border-radius: 28px;
-  font-size: 1.25rem;
-  background: linear-gradient(90deg, #3ec6e0 30%, #6de195 100%);
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 16px 0 rgba(62,198,224,0.08);
-  transition: background 0.2s, transform 0.2s;
-}
-.start-btn:hover, .next-btn:hover, .restart-btn:hover {
-  background: linear-gradient(90deg, #6de195 30%, #3ec6e0 100%);
-  transform: scale(1.04);
-}
+    function updateProgressBar() {
+        const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
 
-.progress-bar-bg {
-  width: 100%;
-  height: 12px;
-  background: #e6eaea;
-  border-radius: 6px;
-  margin-bottom: 36px;
-  overflow: hidden;
-}
-.progress-bar-fill {
-  height: 100%;
-  transition: width 0.5s cubic-bezier(.6,0,.38,1.04);
-  background: linear-gradient(90deg, #a3d8f4 0%, #6de195 100%);
-  border-radius: 6px;
-}
+    function displayQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.question}`;
+        choicesContainer.innerHTML = '';
+        nextButton.disabled = true;
+        selectedChoiceButton = null;
 
-.question-text {
-  font-size: 1.6rem;
-  font-weight: 500;
-  margin-bottom: 38px;
-  text-align: center;
-  color: #222;
-  min-height: 3rem;
-}
+        questionData.choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.classList.add('choice-button');
+            btn.textContent = choice.text;
+            btn.dataset.value = choice.value;
+            btn.onclick = () => selectChoice(btn, choice.value);
+            choicesContainer.appendChild(btn);
+        });
 
-.choices-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 30px;
-}
+        currentQuestionNum.textContent = currentQuestionIndex + 1;
+        totalQuestionsNum.textContent = questions.length;
+        updateProgressBar();
+    }
 
-.choice-btn {
-  border: 3px solid transparent;
-  border-radius: 18px;
-  padding: 20px 32px;
-  font-size: 1.18rem;
-  cursor: pointer;
-  transition: background 0.22s, border 0.22s;
-  font-weight: 500;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.03);
-  outline: none;
-}
+    function selectChoice(button, value) {
+        if (selectedChoiceButton) selectedChoiceButton.classList.remove('selected');
+        button.classList.add('selected');
+        selectedChoiceButton = button;
+        nextButton.disabled = false;
+        quizScreen.dataset.currentSelection = value;
+    }
 
-.choice-btn[data-index="0"] {
-  background: #ffb3b3;
-  color: #a11a1a;
-}
-.choice-btn[data-index="1"] {
-  background: #ffd6a2;
-  color: #b55d00;
-}
-.choice-btn[data-index="2"] {
-  background: #fff7a2;
-  color: #b2a000;
-}
-.choice-btn[data-index="3"] {
-  background: #b5f2c8;
-  color: #1d823b;
-}
-.choice-btn[data-index="4"] {
-  background: #a4c7fc;
-  color: #1956a5;
-}
+    function showResults() {
+        showScreen(resultsScreen);
 
-.choice-btn.selected[data-index="0"] { background: #ffeaea; }
-.choice-btn.selected[data-index="1"] { background: #fff3e0; }
-.choice-btn.selected[data-index="2"] { background: #fffde7; }
-.choice-btn.selected[data-index="3"] { background: #e2faee; }
-.choice-btn.selected[data-index="4"] { background: #e7f2ff; }
+        // max score politician (동점일 경우 먼저 등장하는 순서)
+        let maxScore = -1;
+        let mostSimilar = null;
+        for (const key in scores) {
+            if (scores[key] > maxScore) {
+                maxScore = scores[key];
+                mostSimilar = key;
+            }
+        }
 
-.choice-btn:hover:not(.selected) { background: none; }
-.choice-btn:hover[data-index="0"] { border: 3px solid #ffb3b3;}
-.choice-btn:hover[data-index="1"] { border: 3px solid #ffd6a2;}
-.choice-btn:hover[data-index="2"] { border: 3px solid #fff7a2;}
-.choice-btn:hover[data-index="3"] { border: 3px solid #b5f2c8;}
-.choice-btn:hover[data-index="4"] { border: 3px solid #a4c7fc;}
+        if (!mostSimilar) {
+            mostSimilarPolitician.textContent = "결과를 알 수 없습니다.";
+            politicianDescription.textContent = "질문에 답변이 없습니다.";
+        } else {
+            const result = politicians[mostSimilar];
+            mostSimilarPolitician.textContent = `${result.emoji} ${result.name}`;
+            politicianDescription.textContent = result.description;
+        }
 
-.choices-list .choice-btn.selected { box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+        // 모든 정치인 정보
+        allPoliticiansInfo.innerHTML = '';
+        for (const key in politicians) {
+            const p = politicians[key];
+            const card = document.createElement('div');
+            card.className = 'politician-card';
+            card.innerHTML = `
+                <h4>${p.emoji} ${p.name}</h4>
+                <p><strong>설명:</strong> ${p.description}</p>
+                <p><strong>당신과의 유사도 점수:</strong> ${scores[key] || 0}점</p>
+            `;
+            allPoliticiansInfo.appendChild(card);
+        }
+    }
 
-/* 결과 모션 추가 */
-.result-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  margin-top: 16px;
-  animation: fadeInScale 0.85s cubic-bezier(.23,1.29,.61,1.01);
-}
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(.86) translateY(48px);}
-  to   { opacity: 1; transform: scale(1) translateY(0);}
-}
+    // Event Listeners
+    startButton.onclick = () => {
+        initializeScores();
+        currentQuestionIndex = 0;
+        showScreen(quizScreen);
+        displayQuestion();
+    };
 
-/* 결과 리스트 순차 등장 모션 */
-.result-list .result-row {
-  opacity: 0;
-  transform: translateY(24px) scale(.96);
-  animation: rowFadeIn 0.55s cubic-bezier(.45,1.24,.67,1.01) forwards;
-}
-.result-list .result-row:nth-child(1) { animation-delay: 0.18s;}
-.result-list .result-row:nth-child(2) { animation-delay: 0.29s;}
-.result-list .result-row:nth-child(3) { animation-delay: 0.4s;}
-.result-list .result-row:nth-child(4) { animation-delay: 0.51s;}
-.result-list .result-row:nth-child(5) { animation-delay: 0.62s;}
-@keyframes rowFadeIn {
-  to { opacity: 1; transform: translateY(0) scale(1);}
-}
+    nextButton.onclick = () => {
+        const selectedValue = quizScreen.dataset.currentSelection;
+        if (selectedValue) {
+            scores[selectedValue]++;
+            delete quizScreen.dataset.currentSelection;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    };
 
-.result-title {
-  font-size: 2.1rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1b3549;
-}
-.result-img {
-  width: 168px;
-  height: 168px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 6px solid #eaeaea;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.09);
-  margin-bottom: 8px;
-  background: #f3f5fa;
-}
+    restartButton.onclick = () => {
+        showScreen(introScreen);
+    };
 
-.result-desc {
-  font-size: 1.22rem;
-  color: #31475e;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.result-list {
-  margin-top: 30px;
-  width: 85%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.result-row {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  background: #f8fafd;
-  padding: 12px 22px;
-  border-radius: 18px;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.03);
-}
-.result-row .result-img {
-  width: 56px;
-  height: 56px;
-  border-width: 3px;
-  margin-bottom: 0;
-}
-.result-row .pres-name {
-  font-weight: 600;
-  width: 90px;
-}
-.result-row .rate {
-  margin-left: auto;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #555;
-}
-
-@media (max-width: 900px) {
-  .quiz-box {
-    max-width: 99vw;
-    max-height: 99vw;
-    padding: 24px 8vw 20px 8vw;
-  }
-  .quiz-title {
-    font-size: 2rem;
-  }
-  .quiz-subtitle {
-    font-size: 1rem;
-  }
-}
+    // Init
+    showScreen(introScreen);
+});
