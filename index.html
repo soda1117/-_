@@ -1,48 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Climate Balance Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>나는 어떤 기후정책 정치가와 닮았을까?</title>
+  <meta name="viewport" content="width=1280, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🌎 Climate Balance Game 🌿</h1>
-            <p>Find the political character most aligned with your environmental and democratic values.</p>
-        </header>
-
-        <main id="game-area">
-            <div id="intro-screen" class="screen active">
-                <button id="start-button">Start Game</button>
-            </div>
-
-            <div id="quiz-screen" class="screen">
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-                <div class="question-container">
-                    <h2 id="question-text"></h2>
-                    <div id="choices-container" class="choices-grid"></div>
-                </div>
-                <p class="question-counter"><span id="current-question-num">1</span> / <span id="total-questions-num">10</span></p>
-                <button id="next-button" disabled>Next Question</button>
-            </div>
-
-            <div id="results-screen" class="screen">
-                <h2>Your Climate Compass Points To:</h2>
-                <div id="result-politician" class="result-box">
-                    <h3 id="most-similar-politician"></h3>
-                    <p id="politician-description"></p>
-                </div>
-                <h3>Meet the Fictional Leaders:</h3>
-                <div id="all-politicians-info" class="politician-cards-grid"></div>
-                <button id="restart-button">Play Again</button>
-            </div>
-        </main>
-    </div>
-    <script src="script.js"></script>
+  <div id="game-container"></div>
+  <script src="quiz-data.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
